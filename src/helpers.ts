@@ -1,0 +1,2 @@
+export const JSON_RPC_PROVIDER = 'JSON_RPC_PROVIDER';
+export const NETWORK_CONFIG = 'NETWORK_CONFIG';
