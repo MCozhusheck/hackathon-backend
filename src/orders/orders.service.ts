@@ -14,8 +14,8 @@ export class OrdersService {
     private readonly orderRepository: Repository<Order>,
     @Inject(JSON_RPC_PROVIDER)
     private readonly jsonRpcProvider: ethers.providers.JsonRpcProvider,
-    // @Inject(ALCHEMY_PROVIDER)
-    // private readonly alchemyProvider: AlchemyProvider,
+    @Inject(ALCHEMY_PROVIDER)
+    private readonly alchemyProvider: AlchemyProvider,
   ) {}
 
   async create(input: CreateOrderDto): Promise<Order> {

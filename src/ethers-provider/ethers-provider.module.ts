@@ -21,33 +21,33 @@ import {
         new ethers.providers.JsonRpcProvider(config.get('RPC_URL')),
       inject: [ConfigService],
     },
-    // {
-    //   provide: ALCHEMY_PROVIDER,
-    //   useFactory: (config: ConfigService) => {
-    //     const chain = getChain(80001);
-    //     const eoaSigner: SmartAccountSigner =
-    //       LocalAccountSigner.privateKeyToAccountSigner(
-    //         config.get('PRIVATE_KEY'),
-    //       );
+    {
+      provide: ALCHEMY_PROVIDER,
+      useFactory: (config: ConfigService) => {
+        const chain = getChain(80001);
+        const eoaSigner: SmartAccountSigner =
+          LocalAccountSigner.privateKeyToAccountSigner(
+            config.get('PRIVATE_KEY'),
+          );
 
-    //     const provider = new AlchemyProvider({
-    //       apiKey: config.get('ALCHEMY_API_KEY'),
-    //       chain,
-    //     }).connect(
-    //       (rpcClient) =>
-    //         new LightSmartContractAccount({
-    //           rpcClient,
-    //           owner: eoaSigner,
-    //           chain,
-    //           factoryAddress: getDefaultLightAccountFactoryAddress(chain),
-    //         }),
-    //     );
+        const provider = new AlchemyProvider({
+          apiKey: config.get('ALCHEMY_API_KEY'),
+          chain,
+        }).connect(
+          (rpcClient) =>
+            new LightSmartContractAccount({
+              rpcClient,
+              owner: eoaSigner,
+              chain,
+              factoryAddress: getDefaultLightAccountFactoryAddress(chain),
+            }),
+        );
 
-    //     return provider;
-    //   },
-    //   inject: [ConfigService],
-    // },
+        return provider;
+      },
+      inject: [ConfigService],
+    },
   ],
-  exports: [JSON_RPC_PROVIDER],
+  exports: [JSON_RPC_PROVIDER, ALCHEMY_PROVIDER],
 })
 export class EthersProviderModule {}
