@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, Column, ObjectIdColumn } from 'typeorm';
 
 @Entity()
 export class Permit {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  _id: number;
 
   @Column()
   owner: string;

@@ -22,8 +22,7 @@ export class PermitsService {
   }
   async create(input: CreatePermitDto): Promise<Permit> {
     this.validatePermit(input);
-    const permit = this.permitRepository.create(input);
-    return await this.permitRepository.save(permit);
+    return await this.permitRepository.save(input);
   }
 
   async findAll(): Promise<Permit[]> {
