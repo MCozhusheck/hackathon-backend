@@ -19,6 +19,6 @@ export class User {
   })
   role: Role;
 
-  @Column({ default: null })
-  privateKey: string | null;
+  @Column()
+  privateKey: string;
 }

@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from 'src/roles/role.enum';
 import { Repository } from 'typeorm';
+import { ethers } from 'ethers';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +26,12 @@ export class UsersService {
   }
 
   async create(input: CreateUserDto): Promise<User> {
-    return await this.userRepository.save({ ...input, role: Role.User });
+    const wallet = ethers.Wallet.createRandom();
+    return await this.userRepository.save({
+      ...input,
+      role: Role.User,
+      privateKey: wallet.privateKey,
+    });
   }
 
   async findOneById(id: number): Promise<User> {
@@ -34,11 +40,5 @@ export class UsersService {
 
   async findOneByName(userName: string): Promise<User> {
     return await this.userRepository.findOne({ where: { name: userName } });
-  }
-
-  async updatePrivateKey(id: number, privateKey: string): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
-    user.privateKey = privateKey;
-    return await this.userRepository.save(user);
   }
 }

@@ -35,8 +35,4 @@ export class AuthService {
     const user = await this.usersService.findOneById(userId);
     return user;
   }
-
-  async updatePrivateKey(id: number, privateKey: string) {
-    return await this.usersService.updatePrivateKey(id, privateKey);
-  }
 }
