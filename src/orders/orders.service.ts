@@ -19,7 +19,10 @@ export class OrdersService {
   ) {}
 
   async create(input: CreateOrderDto): Promise<Order> {
-    return await this.orderRepository.save(input);
+    // get user from session
+    console.log(input);
+
+    return await this.orderRepository.save({ ...input, owner: 'user' });
   }
 
   async getOrder(id: number): Promise<Order> {

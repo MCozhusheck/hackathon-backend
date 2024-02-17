@@ -13,7 +13,7 @@ export class Order {
   tokenAddress: string;
 
   @Column()
-  tokenAmount: string;
+  shares: string;
 
   @Column()
   price: string;
