@@ -16,12 +16,14 @@ export class UsersService {
     admin.name = 'admin';
     admin.password = 'test';
     admin.role = Role.Admin;
+    admin.privateKey = ethers.Wallet.createRandom().privateKey;
     this.userRepository.save(admin);
 
     const user = new User();
     user.name = 'user';
     user.password = 'test';
     user.role = Role.User;
+    user.privateKey = ethers.Wallet.createRandom().privateKey;
     this.userRepository.save(user);
   }
 
