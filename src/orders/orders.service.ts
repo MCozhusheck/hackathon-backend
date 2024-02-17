@@ -21,4 +21,8 @@ export class OrdersService {
   async create(input: CreateOrderDto): Promise<Order> {
     return await this.orderRepository.save(input);
   }
+
+  async getOrders(): Promise<Order[]> {
+    return await this.orderRepository.find();
+  }
 }

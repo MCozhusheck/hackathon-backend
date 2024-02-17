@@ -10,7 +10,19 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) {
+    const admin = new User();
+    admin.name = 'admin';
+    admin.password = 'test';
+    admin.role = Role.Admin;
+    this.userRepository.save(admin);
+
+    const user = new User();
+    user.name = 'user';
+    user.password = 'test';
+    user.role = Role.User;
+    this.userRepository.save(user);
+  }
 
   async create(input: CreateUserDto): Promise<User> {
     return await this.userRepository.save({ ...input, role: Role.User });
