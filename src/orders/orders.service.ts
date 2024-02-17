@@ -22,6 +22,10 @@ export class OrdersService {
     return await this.orderRepository.save(input);
   }
 
+  async getOrder(id: number): Promise<Order> {
+    return await this.orderRepository.findOne({ where: { id } });
+  }
+
   async getOrders(): Promise<Order[]> {
     return await this.orderRepository.find();
   }
