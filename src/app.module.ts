@@ -9,6 +9,8 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { Permit } from './permits/entities/permit.entity';
+import { OrdersModule } from './orders/orders.module';
+import { Order } from './orders/entities/order.entity';
 
 @Module({
   imports: [
@@ -19,7 +21,7 @@ import { Permit } from './permits/entities/permit.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [User, Permit],
+      entities: [User, Permit, Order],
       synchronize: true,
     }),
     ConfigModule.forRoot({
@@ -29,6 +31,7 @@ import { Permit } from './permits/entities/permit.entity';
     EthersProviderModule,
     AuthModule,
     UsersModule,
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
