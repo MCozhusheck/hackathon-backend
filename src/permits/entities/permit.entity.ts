@@ -12,7 +12,7 @@ export class Permit {
   spender: string;
 
   @Column()
-  value: number;
+  string: number;
 
   @Column()
   nonce: number;

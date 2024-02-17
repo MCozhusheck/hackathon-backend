@@ -29,4 +29,4 @@ services:
       PAYMASTER_ADDRESS: 0x952F672084621d4480b057DA0010D8e1a33B3858
       TOK_ADDRESS: 0x47e70e809371137C9d0eA0624969ba80f5561F35
 
-    command: npm run start
+    command: npm run start:dev

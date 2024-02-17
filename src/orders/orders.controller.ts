@@ -6,6 +6,7 @@ import {
   Put,
   Req,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -18,7 +19,6 @@ export class OrdersController {
   @Put()
   @UseGuards(AuthGuard)
   create(@Body() createOrderDto: CreateOrderDto, @Req() req: Request) {
-    console.log(req);
     const userId = (req as any).user.sub;
 
     return this.ordersService.create(createOrderDto, userId);
