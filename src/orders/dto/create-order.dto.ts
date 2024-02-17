@@ -1,5 +1,5 @@
 export class CreateOrderDto {
   tokenAddress: string;
-  share: string;
+  shares: string;
   price: string;
 }
