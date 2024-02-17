@@ -13,7 +13,7 @@ import { UsersModule } from './users/users.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: 'mongodb+srv://<admin>:<password>@chnirt-graphql-apollo-vg0hq.mongodb.net/nest?retryWrites=true&w=majority',
+      url: 'mongodb://localhost:27017/hackathon-backend',
       entities: [join(__dirname, '**/**.entity{.ts,.js}')],
       synchronize: true,
       useNewUrlParser: true,
