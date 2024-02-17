@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { PermitsModule } from './permits/permits.module';
 import { EthersProviderModule } from './ethers-provider/ethers-provider.module';
 import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { ConfigModule } from '@nestjs/config';
     }),
     PermitsModule,
     EthersProviderModule,
+    AuthModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
