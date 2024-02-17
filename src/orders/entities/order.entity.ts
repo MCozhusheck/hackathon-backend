@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Permit } from 'src/permits/entities/permit.entity';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Order {
@@ -16,4 +17,7 @@ export class Order {
 
   @Column()
   price: string;
+
+  @OneToOne(() => Permit)
+  permit: Permit;
 }

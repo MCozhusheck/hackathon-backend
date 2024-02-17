@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Permit {
@@ -19,4 +19,7 @@ export class Permit {
 
   @Column()
   deadline: number;
+
+  @Column()
+  signature: string;
 }
