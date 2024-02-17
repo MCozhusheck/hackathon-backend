@@ -7,6 +7,8 @@ import { EthersProviderModule } from './ethers-provider/ethers-provider.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { User } from './users/entities/user.entity';
+import { Permit } from './permits/entities/permit.entity';
 
 @Module({
   imports: [
@@ -17,7 +19,7 @@ import { UsersModule } from './users/users.module';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [],
+      entities: [User, Permit],
       synchronize: true,
     }),
     ConfigModule.forRoot({
