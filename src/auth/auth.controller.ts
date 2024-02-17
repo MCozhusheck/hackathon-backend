@@ -4,8 +4,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from './auth.guard';
@@ -31,8 +31,8 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  @Get(':userName')
+  getProfile(@Param('userName') userName: string) {
+    return this.authService.getProfile(userName);
   }
 }

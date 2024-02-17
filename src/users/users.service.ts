@@ -16,7 +16,11 @@ export class UsersService {
     return await this.userRepository.save({ ...input, role: Role.User });
   }
 
-  async findOne(userName: string): Promise<User> {
+  async findOneById(userId: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { id: userId } });
+  }
+
+  async findOneByName(userName: string): Promise<User> {
     return await this.userRepository.findOne({ where: { name: userName } });
   }
 }
