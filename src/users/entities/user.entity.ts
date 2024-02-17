@@ -4,10 +4,10 @@ import { Entity, Column, ObjectIdColumn } from 'typeorm';
 @Entity()
 export class User {
   @ObjectIdColumn()
-  _id: number;
+  id: number;
 
   @Column()
-  userName: string;
+  name: string;
 
   @Column()
   password: string;

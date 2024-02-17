@@ -3,7 +3,7 @@ import { Entity, Column, ObjectIdColumn } from 'typeorm';
 @Entity()
 export class Permit {
   @ObjectIdColumn()
-  _id: number;
+  id: number;
 
   @Column()
   owner: string;

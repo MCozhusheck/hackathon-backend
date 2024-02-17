@@ -16,7 +16,7 @@ export class UsersService {
     return await this.userRepository.save({ ...input, role: Role.User });
   }
 
-  async findOne(id: string): Promise<User> {
-    return await this.userRepository.findOne({ where: { id: id } });
+  async findOne(userName: string): Promise<User> {
+    return await this.userRepository.findOne({ where: { name: userName } });
   }
 }
