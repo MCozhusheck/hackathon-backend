@@ -31,8 +31,8 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Get(':userName')
-  getProfile(@Param('userName') userName: string) {
-    return this.authService.getProfile(userName);
+  @Get(':id')
+  getProfile(@Param('id') id: string) {
+    return this.authService.getProfile(Number(id));
   }
 }

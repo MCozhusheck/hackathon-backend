@@ -1,10 +1,10 @@
 import { Role } from 'src/roles/role.enum';
-import { Entity, Column, ObjectIdColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @ObjectIdColumn()
-  id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   name: string;

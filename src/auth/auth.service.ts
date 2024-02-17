@@ -13,7 +13,7 @@ export class AuthService {
   async signIn(
     username: string,
     pass: string,
-  ): Promise<{ access_token: string; userId: string }> {
+  ): Promise<{ access_token: string; userId: number }> {
     const user = await this.usersService.findOneByName(username);
     if (user?.password !== pass) {
       throw new UnauthorizedException();
@@ -29,8 +29,8 @@ export class AuthService {
     return await this.usersService.create({ name: username, password: pass });
   }
 
-  async getProfile(userName: string): Promise<User> {
-    const user = await this.usersService.findOneByName(userName);
+  async getProfile(userId: number): Promise<User> {
+    const user = await this.usersService.findOneById(userId);
     return user;
   }
 }
