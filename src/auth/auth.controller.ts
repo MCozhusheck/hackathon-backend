@@ -35,4 +35,13 @@ export class AuthController {
   getProfile(@Param('id') id: string) {
     return this.authService.getProfile(Number(id));
   }
+
+  @UseGuards(AuthGuard)
+  @Post('updatePrivateKey')
+  updatePrivateKey(@Body() updatePrivateKeyDto: Record<string, any>) {
+    return this.authService.updatePrivateKey(
+      updatePrivateKeyDto.id,
+      updatePrivateKeyDto.privateKey,
+    );
+  }
 }

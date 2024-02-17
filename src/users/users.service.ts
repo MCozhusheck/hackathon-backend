@@ -35,4 +35,10 @@ export class UsersService {
   async findOneByName(userName: string): Promise<User> {
     return await this.userRepository.findOne({ where: { name: userName } });
   }
+
+  async updatePrivateKey(id: number, privateKey: string): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    user.privateKey = privateKey;
+    return await this.userRepository.save(user);
+  }
 }
