@@ -29,6 +29,10 @@ export class OrdersService {
     return await this.orderRepository.findOne({ where: { id } });
   }
 
+  async findOneByTokenAddress(tokenAddress: string): Promise<Order> {
+    return await this.orderRepository.findOne({ where: { tokenAddress } });
+  }
+
   async getOrders(): Promise<Order[]> {
     return await this.orderRepository.find();
   }

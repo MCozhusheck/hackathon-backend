@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 
@@ -9,6 +9,11 @@ export class OrdersController {
   @Put()
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create(createOrderDto);
+  }
+
+  @Get('tokenAddress/:tokenAddress')
+  findOneByTokenAddress(@Param('tokenAddress') tokenAddress: string) {
+    return this.ordersService.findOneByTokenAddress(tokenAddress);
   }
 
   @Get()
