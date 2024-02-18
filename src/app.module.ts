@@ -11,6 +11,7 @@ import { User } from './users/entities/user.entity';
 import { Permit } from './permits/entities/permit.entity';
 import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
+import { TransactOrdersModule } from './transact-orders/transact-orders.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { Order } from './orders/entities/order.entity';
     AuthModule,
     UsersModule,
     OrdersModule,
+    TransactOrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
