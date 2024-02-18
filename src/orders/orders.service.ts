@@ -8,7 +8,7 @@ import { Permit } from 'src/permits/entities/permit.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { Order } from './entities/order.entity';
+import { Order, OrderStatus } from './entities/order.entity';
 import { signPermitCreateOrder } from './utils/utils';
 
 @Injectable()
@@ -104,7 +104,9 @@ export class OrdersService {
   }
 
   async findByTokenAddress(tokenAddress: string): Promise<Order[]> {
-    return await this.orderRepository.find({ where: { tokenAddress } });
+    return await this.orderRepository.find({
+      where: { tokenAddress, status: OrderStatus.PpraApproved },
+    });
   }
 
   async getOrders(): Promise<Order[]> {

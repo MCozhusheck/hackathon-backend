@@ -8,8 +8,11 @@ import { ALCHEMY_PROVIDER, JSON_RPC_PROVIDER } from 'src/helpers';
 import { Order, OrderStatus } from 'src/orders/entities/order.entity';
 import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
-import { TOK__factory } from 'typechain';
+
 import { In, Repository } from 'typeorm';
+
+//@ts-ignore
+import { typechain } from 'sira-contracts';
 
 @Injectable()
 export class TransactOrdersService {
@@ -34,16 +37,21 @@ export class TransactOrdersService {
     const ids = orderIds.map((id) => +id);
     const ordersToTransact = await this.orderRepository.find({
       where: { id: In(ids) },
+      relations: ['owner', 'permit'],
     });
     const tokAddress = this.configService.get('TOK_ADDRESS') as string;
     const paymasterAddress = this.configService.get(
       'PAYMASTER_ADDRESS',
     ) as `0x${string}`;
-    const tok = TOK__factory.connect(tokAddress, this.provider);
+    const Orderbook_factory = typechain.Orderbook__factory;
+
+    const orderBook = Orderbook_factory.connect(tokAddress, this.provider);
 
     const batchOrders: BatchUserOperationCallData = [];
     const orders = await Promise.all(
       ordersToTransact.map(async (order) => {
+        console.log(order);
+
         const signer = new ethers.Wallet(order.owner.privateKey, this.provider);
         const owner = await signer.getAddress();
         return {
@@ -51,16 +59,22 @@ export class TransactOrdersService {
           tokenAddress: order.tokenAddress,
           tokenAmount: order.shares,
           owner,
+          permit: order.permit,
         };
       }),
     );
 
     for (const order of orders) {
-      const populated = await tok.populateTransaction.createOrder(
+      const populated = await orderBook.populateTransaction.createOrder(
+        order.owner,
         order.price,
         order.tokenAddress,
         order.tokenAmount,
         order.owner,
+        order.permit.deadline,
+        order.permit.v,
+        order.permit.r,
+        order.permit.s,
       );
 
       batchOrders.push({
