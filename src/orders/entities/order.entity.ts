@@ -8,6 +8,15 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+export enum OrderStatus {
+  Created,
+  OwnerApproved,
+  PpraApproved,
+  Hidden,
+  Done,
+  Removed,
+}
+
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
@@ -21,6 +30,13 @@ export class Order {
 
   @Column()
   price: string;
+
+  @Column({
+    type: 'enum',
+    enum: OrderStatus,
+    default: OrderStatus.Created,
+  })
+  status: OrderStatus;
 
   @OneToOne(() => Permit)
   @JoinColumn()

@@ -8,7 +8,7 @@ export class TransactOrdersController {
 
   @Post('all')
   @UseGuards(AuthGuard)
-  TransactAllOrders(@Req() req, @Body('orderIds') orderIds: number[]) {
+  TransactAllOrders(@Req() req, @Body('orderIds') orderIds: string[]) {
     this.transactService.transactAllOrders(orderIds, +req.user.id);
   }
 }
