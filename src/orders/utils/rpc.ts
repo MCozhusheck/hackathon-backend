@@ -11,7 +11,6 @@ export const send = (provider: any, method: string, params?: any[]) =>
       if (err) {
         reject(err);
       } else if (result.error) {
-        console.error(result.error);
         reject(result.error);
       } else {
         resolve(result.result);

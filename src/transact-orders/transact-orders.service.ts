@@ -57,8 +57,6 @@ export class TransactOrdersService {
     const orders = await Promise.all(
       ordersToTransact
         .map(async (order) => {
-          console.log(order);
-
           const signer = new ethers.Wallet(order.owner.privateKey, provider);
           const owner = await signer.getAddress();
 

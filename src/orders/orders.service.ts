@@ -31,7 +31,6 @@ export class OrdersService {
   ) {}
 
   async create(input: CreateOrderDto, userId: number): Promise<Order> {
-    console.log(input);
     const user = await this.userRepository.findOne({
       where: {
         id: userId as any,
@@ -110,8 +109,6 @@ export class OrdersService {
     order.price = input.price;
     order.shares = input.shares;
     order.tokenAddress = input.tokenAddress;
-
-    console.log('order', order);
 
     return await this.orderRepository.save(order);
   }
