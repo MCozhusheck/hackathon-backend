@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Order } from './entities/order.entity';
-import { Repository } from 'typeorm';
-import { ALCHEMY_PROVIDER, JSON_RPC_PROVIDER } from 'src/helpers';
-import { BigNumber, ethers, providers } from 'ethers';
 import { AlchemyProvider } from '@alchemy/aa-alchemy';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
+import { BigNumber, ethers, providers } from 'ethers';
+import { ALCHEMY_PROVIDER, JSON_RPC_PROVIDER } from 'src/helpers';
 import { Permit } from 'src/permits/entities/permit.entity';
 import { User } from 'src/users/entities/user.entity';
-import { ConfigService } from '@nestjs/config';
+import { Repository } from 'typeorm';
+import { CreateOrderDto } from './dto/create-order.dto';
+import { Order } from './entities/order.entity';
 import { signPermitCreateOrder } from './utils/utils';
 
 @Injectable()
@@ -59,7 +59,7 @@ export class OrdersService {
     console.log('here 5');
 
     const equityTokenOwner = '0x1639805FBbC9c5039bc56BA516f396B73b480a23'; // ! FIX
-    const token = '0x56343864296972A1573952dd9AD9fb59467442b6'; // ! FIX
+    const stablecoinAddress = '0x56343864296972A1573952dd9AD9fb59467442b6'; // ! FIX
     const orderBookAddress = '0x47e70e809371137C9d0eA0624969ba80f5561F35'; // ! FIX
 
     const block = await provider.getBlock('latest');
@@ -70,24 +70,25 @@ export class OrdersService {
       equityTokenAmount,
       owner,
       equityTokenOwner,
-      token,
+      stablecoinAddress,
       orderBookAddress,
       deadline,
     });
 
-    const signature = await signPermitCreateOrder(
+    const signature = await signPermitCreateOrder({
       provider,
       equityToken,
       equityTokenOwner,
       pricePerToken,
       equityTokenAmount,
-      token,
-      owner,
-      orderBookAddress,
-      stableTokenAmount.toString(),
-      deadline,
-      0,
-    );
+      tokenAddress: stablecoinAddress,
+      tokenName: 'TestStableCoin',
+      chainId: 80001,
+      spender: orderBookAddress,
+      value: stableTokenAmount.toString(),
+      deadline: deadline,
+      owner: owner,
+    });
 
     console.log(signature);
     const permit = new Permit();
