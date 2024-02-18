@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ethers } from 'ethers';
 import { ALCHEMY_PROVIDER, JSON_RPC_PROVIDER } from 'src/helpers';
-import { Order } from 'src/orders/entities/order.entity';
+import { Order, OrderStatus } from 'src/orders/entities/order.entity';
 import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
 import { TOK__factory } from 'typechain';
@@ -83,5 +83,12 @@ export class TransactOrdersService {
         },
       })
       .sendUserOperation(batchOrders);
+
+    await Promise.all(
+      ordersToTransact.map(async (order) => {
+        order.status = OrderStatus.PpraApproved;
+        await this.orderRepository.save(order);
+      }),
+    );
   }
 }
