@@ -12,14 +12,17 @@ export class Permit {
   spender: string;
 
   @Column()
-  string: number;
-
-  @Column()
-  nonce: number;
-
-  @Column()
   deadline: number;
 
   @Column()
-  signature: string;
+  r: string;
+
+  @Column()
+  s: string;
+
+  @Column()
+  v: number;
+
+  @Column()
+  nonce?: number;
 }

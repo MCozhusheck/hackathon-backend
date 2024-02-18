@@ -43,20 +43,15 @@ export class OrdersService {
 
     const equityToken = input.tokenAddress;
 
-    console.log('here 1');
-
     const pricePerToken = BigNumber.from(input.shares).div(
       BigNumber.from(input.price).mul(BigNumber.from(10).pow(12)),
     );
-    console.log('here 2');
+
     const equityTokenAmount = BigNumber.from(input.shares);
-    console.log('here 3');
 
     const owner = signer.address;
 
-    console.log('here 4');
     const stableTokenAmount = BigNumber.from(input.price);
-    console.log('here 5');
 
     const equityTokenOwner = '0x1639805FBbC9c5039bc56BA516f396B73b480a23'; // ! FIX
     const stablecoinAddress = '0x56343864296972A1573952dd9AD9fb59467442b6'; // ! FIX
@@ -65,18 +60,8 @@ export class OrdersService {
     const block = await provider.getBlock('latest');
     const deadline = block.timestamp + 7 * 86_400;
 
-    console.log({
-      equityToken,
-      equityTokenAmount,
-      owner,
-      equityTokenOwner,
-      stablecoinAddress,
-      orderBookAddress,
-      deadline,
-    });
-
     const signature = await signPermitCreateOrder({
-      provider,
+      provider: signer,
       equityToken,
       equityTokenOwner,
       pricePerToken,
@@ -90,17 +75,28 @@ export class OrdersService {
       owner: owner,
     });
 
-    console.log(signature);
     const permit = new Permit();
     permit.deadline = Number(signature.deadline);
     permit.owner = signature.owner;
     permit.spender = signature.spender;
 
-    return await this.orderRepository.save({
-      ...input,
-      owner: user,
-      permit,
-    });
+    permit.r = signature.r;
+    permit.s = signature.s;
+    permit.v = signature.v;
+    permit.nonce = 0; // todo
+
+    const pp = await this.permitRepository.save(permit);
+
+    const order = new Order();
+    order.owner = user;
+    order.permit = pp;
+    order.price = input.price;
+    order.shares = input.shares;
+    order.tokenAddress = input.tokenAddress;
+
+    console.log('order', order);
+
+    return await this.orderRepository.save(order);
   }
 
   async getOrder(id: number): Promise<Order> {

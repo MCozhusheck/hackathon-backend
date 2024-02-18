@@ -1,14 +1,17 @@
 import { Permit } from 'src/permits/entities/permit.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @OneToOne(() => User)
-  owner: User;
 
   @Column()
   tokenAddress: string;
@@ -20,5 +23,10 @@ export class Order {
   price: string;
 
   @OneToOne(() => Permit)
+  @JoinColumn()
   permit: Permit;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  owner: User;
 }

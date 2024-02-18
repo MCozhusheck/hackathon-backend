@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { RSV, call, signData } from './rpc';
 
 const MAX_INT =
@@ -197,7 +197,15 @@ export const signPermitCreateOrder = async ({
   );
   const sig = await provider._signTypedData(domain, types, message);
 
-  return { ...sig, ...permitMessage, ...orderMessage };
+  const signattt = ethers.utils.splitSignature(sig);
+
+  return {
+    r: signattt.r,
+    s: signattt.s,
+    v: signattt.v,
+    ...permitMessage,
+    ...orderMessage,
+  };
 };
 
 export const signPermitApproveOrder = async (
