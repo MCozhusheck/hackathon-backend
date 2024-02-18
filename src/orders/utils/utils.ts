@@ -167,14 +167,17 @@ export const signPermitCreateOrder = async (
   equityTokenOwner: string,
   pricePerToken: BigNumber,
   equityTokenAmount: BigNumber,
-  token: string | Domain,
+  tokenAddress: string,
+  tokenName: string,
+  chainId: number,
+  verifyingContract: string,
   owner: string,
   spender: string,
   value: string | number = MAX_INT,
   deadline?: number,
   nonce?: number,
 ): Promise<ERC2612PermitMessage & RSV> => {
-  const tokenAddress = (token as Domain).verifyingContract || (token as string);
+  // const tokenAddress = (token as Domain).verifyingContract || (token as string); TODO remove
 
   const orderMessage: CreateOrderMessage = {
     equityToken: equityToken,
@@ -198,7 +201,13 @@ export const signPermitCreateOrder = async (
     deadline: deadline || MAX_INT,
   };
 
-  const domain = await getDomain(provider, token);
+  // const domain = await getDomain(provider, token) //TODO remove
+  const domain: Domain = {
+    name: tokenName,
+    version: '1',
+    chainId: chainId,
+    verifyingContract: verifyingContract,
+  };
   const typedData = getCreateOrderTypedData(
     orderMessage,
     permitMessage,
@@ -211,19 +220,22 @@ export const signPermitCreateOrder = async (
 
 export const signPermitApproveOrder = async (
   provider: any,
-  token: string | Domain,
+  tokenAddress: string,
+  tokenName: string,
+  chainId: number,
+  verifyingContract: string,
   owner: string,
   spender: string,
   value: string | number = MAX_INT,
   deadline?: number,
   nonce?: number,
 ): Promise<ERC2612PermitMessage & RSV> => {
-  const tokenAddress = (token as Domain).verifyingContract || (token as string);
+  // const tokenAddress = (token as Domain).verifyingContract || (token as string); TODO remove
 
   const approveMessage: ApproveOrderMessage = {
-    token: '0x',
-    tokenOwner: '0x',
-    tokenAmount: '0',
+    token: tokenAddress,
+    tokenOwner: owner,
+    tokenAmount: value.toString(),
     pricePerToken: '0',
   };
 
@@ -242,7 +254,13 @@ export const signPermitApproveOrder = async (
     deadline: deadline || MAX_INT,
   };
 
-  const domain = await getDomain(provider, token);
+  // const domain = await getDomain(provider, token); TODO remove
+  const domain: Domain = {
+    name: tokenName,
+    version: '1',
+    chainId: chainId,
+    verifyingContract: verifyingContract,
+  };
   const typedData = getApproveOrderTypedData(
     approveMessage,
     permitMessage,
