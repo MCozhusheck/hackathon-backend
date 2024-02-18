@@ -11,6 +11,8 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { Order, OrderStatus } from './entities/order.entity';
 import { signPermitCreateOrder } from './utils/utils';
 
+import { deployments } from 'sira-contracts';
+
 @Injectable()
 export class OrdersService {
   constructor(
@@ -38,7 +40,7 @@ export class OrdersService {
     const provider = new providers.JsonRpcProvider(
       'https://polygon-mumbai-bor.publicnode.com',
     );
-    console.log('test', user.privateKey);
+
     const signer = new ethers.Wallet(user.privateKey, provider);
 
     const equityToken = input.tokenAddress;
@@ -53,9 +55,11 @@ export class OrdersService {
 
     const stableTokenAmount = BigNumber.from(input.price);
 
-    const equityTokenOwner = '0x1639805FBbC9c5039bc56BA516f396B73b480a23'; // ! FIX
-    const stablecoinAddress = '0x56343864296972A1573952dd9AD9fb59467442b6'; // ! FIX
-    const orderBookAddress = '0x47e70e809371137C9d0eA0624969ba80f5561F35'; // ! FIX
+    const dep = deployments.getDeployments(80001);
+
+    const equityTokenOwner = '0x1639805FBbC9c5039bc56BA516f396B73b480a23'; // deployer of the token
+    const stablecoinAddress = dep.StableCoin;
+    const orderBookAddress = dep.Orderbook;
 
     const block = await provider.getBlock('latest');
     const deadline = block.timestamp + 7 * 86_400;

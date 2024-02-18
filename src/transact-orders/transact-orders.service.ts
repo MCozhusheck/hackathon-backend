@@ -11,7 +11,6 @@ import { UsersService } from 'src/users/users.service';
 
 import { In, Repository } from 'typeorm';
 
-//@ts-ignore
 import { typechain } from 'sira-contracts';
 
 @Injectable()
@@ -39,10 +38,11 @@ export class TransactOrdersService {
       where: { id: In(ids) },
       relations: ['owner', 'permit'],
     });
-    const tokAddress = this.configService.get('TOK_ADDRESS') as string;
+    const tokAddress = this.configService.get('ORDERBOOK_ADDRESS') as string;
     const paymasterAddress = this.configService.get(
       'PAYMASTER_ADDRESS',
     ) as `0x${string}`;
+
     const Orderbook_factory = typechain.Orderbook__factory;
 
     const orderBook = Orderbook_factory.connect(tokAddress, this.provider);
