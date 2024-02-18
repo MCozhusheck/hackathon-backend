@@ -1,4 +1,4 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { TransactOrdersService } from './transact-orders.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 
@@ -8,7 +8,7 @@ export class TransactOrdersController {
 
   @Post('all')
   @UseGuards(AuthGuard)
-  TransactAllOrders(@Req() req) {
-    this.transactService.transactAllOrders(+req.user.id);
+  TransactAllOrders(@Req() req, @Body('orderIds') orderIds: number[]) {
+    this.transactService.transactAllOrders(orderIds, +req.user.id);
   }
 }
