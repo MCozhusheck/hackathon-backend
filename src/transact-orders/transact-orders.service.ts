@@ -9,7 +9,7 @@ import { Order } from 'src/orders/entities/order.entity';
 import { Role } from 'src/roles/role.enum';
 import { UsersService } from 'src/users/users.service';
 import { TOK__factory } from 'typechain';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class TransactOrdersService {
@@ -26,13 +26,15 @@ export class TransactOrdersService {
     private readonly alchemyProvider: AlchemyProvider,
   ) {}
 
-  async transactAllOrders(userId: number) {
+  async transactAllOrders(orderIds: number[], userId: number) {
     const user = await this.userService.findOneById(userId);
     if (!user && user.role != Role.Admin) {
       throw Error();
     }
 
-    const ordersToTransact = await this.orderRepository.find();
+    const ordersToTransact = await this.orderRepository.find({
+      where: { id: In(orderIds) },
+    });
     const tokAddress = this.configService.get('TOK_ADDRESS') as string;
     const paymasterAddress = this.configService.get(
       'PAYMASTER_ADDRESS',
