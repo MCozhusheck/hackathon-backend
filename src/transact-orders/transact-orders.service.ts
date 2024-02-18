@@ -3,7 +3,7 @@ import { BatchUserOperationCallData } from '@alchemy/aa-core';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { ALCHEMY_PROVIDER, JSON_RPC_PROVIDER } from 'src/helpers';
 import { Order, OrderStatus } from 'src/orders/entities/order.entity';
 import { Role } from 'src/roles/role.enum';
@@ -11,7 +11,8 @@ import { UsersService } from 'src/users/users.service';
 
 import { In, Repository } from 'typeorm';
 
-import { typechain } from 'sira-contracts';
+import { typechain, deployments } from 'sira-contracts';
+import { ERC20__factory } from 'sira-contracts/dist/typechain';
 
 @Injectable()
 export class TransactOrdersService {
@@ -49,19 +50,33 @@ export class TransactOrdersService {
 
     const batchOrders: BatchUserOperationCallData = [];
     const orders = await Promise.all(
-      ordersToTransact.map(async (order) => {
-        console.log(order);
+      ordersToTransact
+        .map(async (order) => {
+          console.log(order);
 
-        const signer = new ethers.Wallet(order.owner.privateKey, this.provider);
-        const owner = await signer.getAddress();
-        return {
-          price: order.price,
-          tokenAddress: order.tokenAddress,
-          tokenAmount: order.shares,
-          owner,
-          permit: order.permit,
-        };
-      }),
+          const signer = new ethers.Wallet(
+            order.owner.privateKey,
+            this.provider,
+          );
+          const owner = await signer.getAddress();
+
+          const { StableCoin } = deployments.getDeployments(80001);
+
+          const erc20 = ERC20__factory.connect(StableCoin, signer);
+
+          const balance = await erc20.balanceOf(owner);
+
+          if (BigNumber.from(order.price).gt(balance)) return null;
+
+          return {
+            price: order.price,
+            tokenAddress: order.tokenAddress,
+            tokenAmount: order.shares,
+            owner,
+            permit: order.permit,
+          };
+        })
+        .filter((order) => order !== null),
     );
 
     for (const order of orders) {
