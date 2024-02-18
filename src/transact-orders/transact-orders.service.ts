@@ -26,14 +26,14 @@ export class TransactOrdersService {
     private readonly alchemyProvider: AlchemyProvider,
   ) {}
 
-  async transactAllOrders(orderIds: number[], userId: number) {
+  async transactAllOrders(orderIds: string[], userId: number) {
     const user = await this.userService.findOneById(userId);
     if (!user && user.role != Role.Admin) {
       throw Error();
     }
-
+    const ids = orderIds.map((id) => +id);
     const ordersToTransact = await this.orderRepository.find({
-      where: { id: In(orderIds) },
+      where: { id: In(ids) },
     });
     const tokAddress = this.configService.get('TOK_ADDRESS') as string;
     const paymasterAddress = this.configService.get(
