@@ -3,7 +3,7 @@ import { BatchUserOperationCallData } from '@alchemy/aa-core';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BigNumber, ethers } from 'ethers';
+import { BigNumber, ethers, providers } from 'ethers';
 import { ALCHEMY_PROVIDER, JSON_RPC_PROVIDER } from 'src/helpers';
 import { Order, OrderStatus } from 'src/orders/entities/order.entity';
 import { Role } from 'src/roles/role.enum';
@@ -34,6 +34,11 @@ export class TransactOrdersService {
     if (!user && user.role != Role.Admin) {
       throw Error();
     }
+
+    const provider = new providers.JsonRpcProvider(
+      'https://polygon-mumbai-bor.publicnode.com',
+    );
+
     const ids = orderIds.map((id) => +id);
     const ordersToTransact = await this.orderRepository.find({
       where: { id: In(ids) },
@@ -46,7 +51,7 @@ export class TransactOrdersService {
 
     const Orderbook_factory = typechain.Orderbook__factory;
 
-    const orderBook = Orderbook_factory.connect(tokAddress, this.provider);
+    const orderBook = Orderbook_factory.connect(tokAddress, provider);
 
     const batchOrders: BatchUserOperationCallData = [];
     const orders = await Promise.all(
@@ -54,10 +59,7 @@ export class TransactOrdersService {
         .map(async (order) => {
           console.log(order);
 
-          const signer = new ethers.Wallet(
-            order.owner.privateKey,
-            this.provider,
-          );
+          const signer = new ethers.Wallet(order.owner.privateKey, provider);
           const owner = await signer.getAddress();
 
           const { StableCoin } = deployments.getDeployments(80001);
@@ -82,7 +84,7 @@ export class TransactOrdersService {
     for (const order of orders) {
       const populated = await orderBook.populateTransaction.createOrder(
         order.owner,
-        order.price,
+        1,
         order.tokenAddress,
         order.tokenAmount,
         order.owner,

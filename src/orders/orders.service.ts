@@ -12,6 +12,7 @@ import { Order, OrderStatus } from './entities/order.entity';
 import { signPermitCreateOrder } from './utils/utils';
 
 import { deployments } from 'sira-contracts';
+import { signPermitApproveOrder } from 'sira-contracts/dist/helpers';
 
 @Injectable()
 export class OrdersService {
@@ -64,20 +65,32 @@ export class OrdersService {
     const block = await provider.getBlock('latest');
     const deadline = block.timestamp + 7 * 86_400;
 
-    const signature = await signPermitCreateOrder({
-      provider: signer,
+    // const signature = await signPermitCreateOrder({
+    //   provider: signer,
+    //   equityToken,
+    //   equityTokenOwner,
+    //   pricePerToken,
+    //   equityTokenAmount,
+    //   tokenAddress: stablecoinAddress,
+    //   tokenName: 'TestStableCoin',
+    //   chainId: 80001,
+    //   spender: orderBookAddress,
+    //   value: stableTokenAmount.toString(),
+    //   deadline: deadline,
+    //   owner: owner,
+    // });
+
+    const signature = await signPermitApproveOrder(
+      signer,
       equityToken,
-      equityTokenOwner,
-      pricePerToken,
-      equityTokenAmount,
-      tokenAddress: stablecoinAddress,
-      tokenName: 'TestStableCoin',
-      chainId: 80001,
-      spender: orderBookAddress,
-      value: stableTokenAmount.toString(),
-      deadline: deadline,
-      owner: owner,
-    });
+      'TestStableCoin',
+      80001,
+      stablecoinAddress,
+      owner,
+      orderBookAddress,
+      stableTokenAmount.toString(),
+      deadline,
+    );
 
     const permit = new Permit();
     permit.deadline = Number(signature.deadline);
