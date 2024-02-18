@@ -1,6 +1,6 @@
-import { getChainId, call, signData, RSV } from './rpc';
-import { hexToUtf8 } from './lib';
 import { BigNumber } from 'ethers';
+import { hexToUtf8 } from './lib';
+import { RSV, call, getChainId, signData } from './rpc';
 
 const MAX_INT =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
@@ -161,22 +161,36 @@ const getDomain = async (
   return domain;
 };
 
-export const signPermitCreateOrder = async (
-  provider: any,
-  equityToken: string,
-  equityTokenOwner: string,
-  pricePerToken: BigNumber,
-  equityTokenAmount: BigNumber,
-  tokenAddress: string,
-  tokenName: string,
-  chainId: number,
-  verifyingContract: string,
-  owner: string,
-  spender: string,
-  value: string | number = MAX_INT,
-  deadline?: number,
-  nonce?: number,
-): Promise<ERC2612PermitMessage & RSV> => {
+export const signPermitCreateOrder = async ({
+  provider,
+  equityToken,
+  equityTokenOwner,
+  pricePerToken,
+  equityTokenAmount,
+  tokenAddress,
+  tokenName,
+  chainId,
+  owner,
+  spender,
+  value = MAX_INT,
+  deadline,
+  nonce,
+}: {
+  provider: any;
+  equityToken: string;
+  equityTokenOwner: string;
+  pricePerToken: BigNumber;
+  equityTokenAmount: BigNumber;
+  tokenAddress: string;
+  tokenName: string;
+  chainId: number;
+
+  owner: string;
+  spender: string;
+  value: string | number;
+  deadline?: number;
+  nonce?: number;
+}): Promise<ERC2612PermitMessage & RSV> => {
   // const tokenAddress = (token as Domain).verifyingContract || (token as string); TODO remove
 
   const orderMessage: CreateOrderMessage = {
@@ -206,7 +220,7 @@ export const signPermitCreateOrder = async (
     name: tokenName,
     version: '1',
     chainId: chainId,
-    verifyingContract: verifyingContract,
+    verifyingContract: tokenAddress,
   };
   const typedData = getCreateOrderTypedData(
     orderMessage,
